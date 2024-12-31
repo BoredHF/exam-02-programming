@@ -245,14 +245,14 @@ def get_guess(turn):
             get_guess(turn)
 
 
-def provide_clue(guess, word_to_guess):
+def provide_clue(guess, correct_word):
     """Generate and return a clue based on the guess."""
     clue = ['_'] * len(guess)  # Start with underscores for all letters.
-    word_copy = list(word_to_guess)  # Create a new list of the word_to_guess
+    word_copy = list(correct_word)
     
     # First pass: check for exact matches ('*')
     for i in range(len(guess)):
-        if guess[i] == word_to_guess[i]:
+        if guess[i] == correct_word[i]:
             clue[i] = '*'  # Correct position
             word_copy[i] = None  # Mark this position as already used
     
@@ -263,23 +263,21 @@ def provide_clue(guess, word_to_guess):
                 clue[i] = '+'  # Correct letter, wrong position
                 word_copy[word_copy.index(guess[i])] = None  # Remove this letter from further checks
     
-    # At this point, remaining clues are '_'
+    # Remaining clues are '_'
     
     return " ".join(clue)
 
-def provide_hint():
-    global word_to_guess, hint_used, hint_words
 
-    # First check the guess and used_letters to see if the
-
-
-def print_game_status(guess, clue):
+def print_game_status(guess, clue, words_might_be):
     """Print the game status, including the clue and the letters used so far."""
     global used_letters, last_guess
     print(f"\nUsed Letters: {used_letters}\n")
     
     print(f"Guess: {guess}")
     print(f"Clue: {clue}")
+
+    print(f"\nMight be words: {words_might_be}")
+
     print(f"{len(last_guess)}")
     if len(last_guess) > 0: 
         print(f"\nYour last guess was {last_guess[len(last_guess) - 1]}")
@@ -315,7 +313,7 @@ def start_game():
         clue = provide_clue(guess, word_to_guess)  # Generate the clue based on the guess
         clue_history.append((guess, clue))
         
-        print_game_status(guess, clue)
+        print_game_status(guess, clue, word_to_guess)
         
         if guess == word_to_guess:
             end_time = time.time()  # Calculate the time taken

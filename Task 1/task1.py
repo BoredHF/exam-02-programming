@@ -13,25 +13,21 @@ amount_unique_numbers = 0
 
 def remove_duplicates(numbers):
     """Remove duplicates and return a list of unique numbers."""
-    global amount_unique_numbers 
-    startTotal = len(numbers)
+    global amount_unique_numbers
     unique_numbers = []
     for num in numbers: # Loops thru all numbers, if they aren't in the new list, add them
         if num not in unique_numbers:
             unique_numbers.append(num)
     amount_unique_numbers = len(unique_numbers) # Adds the amount of unique numbers to a var
-    removedTotal = startTotal - amount_unique_numbers
+    removedTotal = len(numbers) - amount_unique_numbers # Starting total subtract the amount
     print(f"Removed {removedTotal} numbers from your list.")
     return unique_numbers
 
 
 def separate_even_odd(numbers):
     """Separate numbers into even and odd lists."""
-    for num in numbers:
-        if num % 2 == 0:
-            even_numbers.append(num)
-        else:
-            odd_numbers.append(num)
+    return [n for n in numbers if n % 2 == 0], [n for n in numbers if n % 2 != 0]
+
 
 
 def calculate_product(numbers):
@@ -92,12 +88,10 @@ def input_numbers():
 
 
 # Main Execution
-print("Task 1 - Albert Roche")
+print("|- Task 1 -|")
 input_numbers()
 
-
-print("-- Program --")
-print(f"Your numbers: \n{user_input_numbers}")
+print(f"\nYour numbers: \n{user_input_numbers}")
 user_input_numbers.sort()
 user_input_numbers = remove_duplicates(user_input_numbers)
 separate_even_odd(user_input_numbers)
