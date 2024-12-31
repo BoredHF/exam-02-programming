@@ -8,6 +8,7 @@ DEBUG = False
 # Constants
 MAX_GUESSES = 6
 MAX_TIMEOUT = 30
+MAX_LEADERBOARD_COUNT = 5
 MAX_INVALID_WRONG = 3
 WORD_LENGTHS = [4, 5, 6]
 ALLOWED_WORDS = []  # List of valid words from the dictionary
@@ -182,8 +183,11 @@ def display_leaderboard():
             print("Rank | User - Difficulty - Avg Time(s) - Tries")
             count = 0
             for line in f:
-                print(f"#{count + 1} | {line.strip()}")
                 count += 1
+                print(f"#{count} | {line.strip()}")
+                if count >= MAX_LEADERBOARD_COUNT:  # Stop displaying after MAX_LEADERBOARD_COUNT
+                    break
+            display_menu()
     except FileNotFoundError:
         print("No previous winners found.")
 
