@@ -8,14 +8,14 @@ DEBUG = False
 # Constants
 MAX_GUESSES = 6
 MAX_TIMEOUT = 30
-MAX_INVAILD_WRONG = 3
+MAX_INVALID_WRONG = 3
 WORD_LENGTHS = [4, 5, 6]
 ALLOWED_WORDS = []  # List of valid words from the dictionary
 
 player_username = "Guest"  # Default username if they opt out
 word_to_guess = ""  # The word to guess
 difficulty = 5  # Default difficulty level (5 letters)
-invaild_wrong_count = 0
+invalid_wrong_count = 0
 
 used_letters = []
 last_guess = []
@@ -203,7 +203,7 @@ def select_random_word():
 
 def get_guess(turn):
     """Prompt the user to enter a guess and validate it."""
-    global word_to_guess, invaild_wrong_count, MAX_INVAILD_WRONG
+    global word_to_guess, invalid_wrong_count, MAX_INVALID_WRONG
     start_time = time.time()  # Record time when the guess is initiated
     try:   
         while True:
@@ -221,14 +221,14 @@ def get_guess(turn):
                 print(f"Please enter a {difficulty}-letter word.")
             elif guess not in ALLOWED_WORDS:
                 print(f"'{guess}' is not a valid word. Try again.")
-                invaild_wrong_count += 1
-                print(f"You have {MAX_INVAILD_WRONG - invaild_wrong_count} until you lose this turn.")
-                if MAX_INVAILD_WRONG <= invaild_wrong_count:
+                invalid_wrong_count += 1
+                print(f"You have {MAX_INVALID_WRONG - invalid_wrong_count} until you lose this turn.")
+                if MAX_INVALID_WRONG <= invalid_wrong_count:
                     print(f"You did not use a word inside the Dictionary. You have lost a turn.")
-                    invaild_wrong_count = 0
+                    invalid_wrong_count = 0
                     return None 
             else:
-                # The guess is vaild
+                # The guess is valid
                 last_guess.append(guess)
                 for char in guess:
                     used_letters.append(char)
@@ -268,7 +268,7 @@ def provide_clue(guess, correct_word):
     return " ".join(clue)
 
 
-def print_game_status(guess, clue, words_might_be):
+def print_game_status(guess, clue):
     """Print the game status, including the clue and the letters used so far."""
     global used_letters, last_guess
     print(f"\nUsed Letters: {used_letters}\n")
@@ -276,11 +276,28 @@ def print_game_status(guess, clue, words_might_be):
     print(f"Guess: {guess}")
     print(f"Clue: {clue}")
 
-    print(f"\nMight be words: {words_might_be}")
-
     print(f"{len(last_guess)}")
     if len(last_guess) > 0: 
         print(f"\nYour last guess was {last_guess[len(last_guess) - 1]}")
+
+
+def hint():
+    """Provide a random letter from the word without revealing its position."""
+    global hint_used
+    if hint_used:
+        print("You have already used your hint.")
+        return
+    hint_used = True
+    revealed_letter = random.choice(word_to_guess)
+    print(f"Hint: The word contains the letter '{revealed_letter}'")
+
+def help_words():
+    """Provide possible words based on known correct letters and positions."""
+    global hint_words
+    known_correct = [c for i, c in enumerate(last_guess[-1]) if clue_history[-1][1][i] == '*']
+    possible_words = [word for word in ALLOWED_WORDS if all(letter in word for letter in known_correct)]
+    hint_words = possible_words
+    print("Possible words: ", ', '.join(possible_words))
 
 
 def save_winner(time_taken, tries):
@@ -292,7 +309,7 @@ def save_winner(time_taken, tries):
 
 def start_game():
     """Start the game loop and allow the player to guess the word."""
-    global word_to_guess, clue_history, hint_used, help_used, player_username, invaild_wrong_count
+    global word_to_guess, clue_history, hint_used, help_used, player_username, invalid_wrong_count
     get_username()
     select_random_word()  # Ensure a word is selected at the start
     print(f"Welcome to Wordle, {player_username}!")
@@ -313,7 +330,7 @@ def start_game():
         clue = provide_clue(guess, word_to_guess)  # Generate the clue based on the guess
         clue_history.append((guess, clue))
         
-        print_game_status(guess, clue, word_to_guess)
+        print_game_status(guess, clue)
         
         if guess == word_to_guess:
             end_time = time.time()  # Calculate the time taken
@@ -326,7 +343,7 @@ def start_game():
         
         # Reset the other values - Just in case
         player_username = ""
-        invaild_wrong_count = 0
+        invalid_wrong_count = 0
     display_menu()
 
 
