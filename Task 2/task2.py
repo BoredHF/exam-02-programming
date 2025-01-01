@@ -1,6 +1,6 @@
 import random
-import time
 import sys
+import time
 
 # Hope you don't cheat :)
 DEBUG = False
@@ -185,7 +185,7 @@ def display_leaderboard():
             for line in f:
                 count += 1
                 print(f"#{count} | {line.strip()}")
-                if count >= MAX_LEADERBOARD_COUNT:  # Stop displaying after MAX_LEADERBOARD_COUNT
+                if count >= MAX_LEADERBOARD_COUNT:  # Stop displaying after
                     break
             display_menu()
     except FileNotFoundError:
