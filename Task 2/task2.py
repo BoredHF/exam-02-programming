@@ -1,6 +1,6 @@
 import random
-import time
 import sys
+import time
 
 # Hope you don't cheat :)
 DEBUG = False
@@ -8,6 +8,7 @@ DEBUG = False
 # Constants
 MAX_GUESSES = 6
 MAX_TIMEOUT = 30
+MAX_LEADERBOARD_COUNT = 5
 MAX_INVALID_WRONG = 3
 WORD_LENGTHS = [4, 5, 6]
 ALLOWED_WORDS = []  # List of valid words from the dictionary
@@ -182,8 +183,11 @@ def display_leaderboard():
             print("Rank | User - Difficulty - Avg Time(s) - Tries")
             count = 0
             for line in f:
-                print(f"#{count + 1} | {line.strip()}")
                 count += 1
+                print(f"#{count} | {line.strip()}")
+                if count >= MAX_LEADERBOARD_COUNT:  # Stop displaying after
+                    break
+            display_menu()
     except FileNotFoundError:
         print("No previous winners found.")
 
@@ -196,10 +200,6 @@ def get_username():
     else:
         print(f"Username set to default: {player_username}")
 
-def select_random_word():
-    """Select a random word from the allowed words list."""
-    global word_to_guess
-    word_to_guess = random.choice(ALLOWED_WORDS)
 
 def get_guess(turn):
     """Prompt the user to enter a guess and validate it."""
@@ -311,7 +311,7 @@ def start_game():
     """Start the game loop and allow the player to guess the word."""
     global word_to_guess, clue_history, hint_used, help_used, player_username, invalid_wrong_count
     get_username()
-    select_random_word()  # Ensure a word is selected at the start
+    word_to_guess = random.choice(ALLOWED_WORDS)  # Ensure a word is selected at the start
     print(f"Welcome to Wordle, {player_username}!")
     if DEBUG:
         print(f"[*] DEBUG: The word is {word_to_guess}")
