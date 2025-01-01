@@ -200,10 +200,6 @@ def get_username():
     else:
         print(f"Username set to default: {player_username}")
 
-def select_random_word():
-    """Select a random word from the allowed words list."""
-    global word_to_guess
-    word_to_guess = random.choice(ALLOWED_WORDS)
 
 def get_guess(turn):
     """Prompt the user to enter a guess and validate it."""
@@ -315,7 +311,7 @@ def start_game():
     """Start the game loop and allow the player to guess the word."""
     global word_to_guess, clue_history, hint_used, help_used, player_username, invalid_wrong_count
     get_username()
-    select_random_word()  # Ensure a word is selected at the start
+    word_to_guess = random.choice(ALLOWED_WORDS)  # Ensure a word is selected at the start
     print(f"Welcome to Wordle, {player_username}!")
     if DEBUG:
         print(f"[*] DEBUG: The word is {word_to_guess}")
